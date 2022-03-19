@@ -1,7 +1,6 @@
 from math import sqrt
 import time
 
-
 def wait(seconds=0):
     waiting = True
     current_time = time.time()
