@@ -3,12 +3,12 @@ import time
 
 left_boundary = 1
 right_boundary = 100
-guesses = 10
+total_guesses = 10
 print("Welcome to the number guessing game.")
 time.sleep(1)
 print("In this game a random number will be generated between " + str(left_boundary), "and", str(right_boundary) + ".")
 time.sleep(1)
-print("The goal is to guess the number in less than " + str(guesses), "tries.")
+print("The goal is to guess the number in less than " + str(total_guesses), "tries.")
 time.sleep(1)
 
 guess = 0
@@ -17,7 +17,7 @@ number_guessed = False
 while guess != "n" and not number_guessed:
     random_number = random.choice(range(left_boundary, right_boundary, 1))
     print("Random number was selected. \nGood Luck!")
-    guesses_left = guesses
+    guesses_left = total_guesses
     previous_guess = -1
     past_count = 0
     guess = 0
@@ -25,7 +25,7 @@ while guess != "n" and not number_guessed:
     while not number_guessed and guesses_left != 0:
         # This try block will catch a Value error if the user inputs anything other than a integer
         try:
-            guess = int(input("Enter your guess (" + str(guesses_left) + " guesses left): "))
+            guess = int(input("Enter your guess (" + str(guesses_left) + " total_guesses left): "))
             guesses_left -= 1
             valid_input = True
         except ValueError:
@@ -41,11 +41,11 @@ while guess != "n" and not number_guessed:
                 print("Guess must be between " + str(left_boundary), "and", str(right_boundary) + ".")
             elif previous_guess == -1:
                 # This runs for the first guess of each game
-                if random_number - 5 < guess < random_number + 5:
+                if random_number - 5 <= guess <= random_number + 5:
                     print("Hot!!")
-                elif random_number - 10 < guess < random_number + 10:
+                elif random_number - 10 <= guess <= random_number + 10:
                     print("Warm.")
-                elif random_number - 15 < guess < random_number + 15:
+                elif random_number - 15 <= guess <= random_number + 15:
                     print("Cold.")
                 else:
                     print("Freezing!!")
@@ -72,7 +72,7 @@ while guess != "n" and not number_guessed:
                 else:
                     print("Colder...")
 
-            if not guesses_left == guesses:
+            if not guesses_left == total_guesses:
                 previous_guess = guess
 
     if guess == "e":
