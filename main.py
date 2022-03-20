@@ -10,7 +10,7 @@ class settings:
         settings.show_logic = show_logic
 
 
-def settings_prompt(current_left_bound,  current_right_bound, current_total_guesses, current_show_logic):
+def settings_prompt(current_left_bound,  current_right_bound, current_total_guesses, current_show_logic=False):
     print("You can change the settings of the game here.")
     left_boundary = 1
     right_boundary = 100
@@ -26,9 +26,10 @@ def settings_prompt(current_left_bound,  current_right_bound, current_total_gues
         if setting_input == "1":
             while not valid_setting_input:
                 try:
-                    print("Current boundary is", left_boundary)
+                    print("Current boundary is", current_left_bound)
                     left_boundary = int(input("What would you like the left boundary to be?\n"))
                     print("Left boundary has been set to", left_boundary)
+                    current_left_bound = left_boundary
                     print("Returning to settings menu.")
                     time.sleep(.5)
                     valid_setting_input = True
@@ -38,8 +39,9 @@ def settings_prompt(current_left_bound,  current_right_bound, current_total_gues
         elif setting_input == "2":
             while not valid_setting_input:
                 try:
-                    print("Current boundary is", right_boundary)
+                    print("Current boundary is", current_right_bound)
                     right_boundary = int(input("What would you like the right boundary to be?\n"))
+                    current_right_bound = right_boundary
                     print("Right boundary has been set to", right_boundary)
                     print("Returning to settings menu.")
                     time.sleep(.5)
@@ -50,8 +52,9 @@ def settings_prompt(current_left_bound,  current_right_bound, current_total_gues
         elif setting_input == "3":
             while not valid_setting_input:
                 try:
-                    print("Current number of guesses is", total_guesses)
+                    print("Current number of guesses is", current_total_guesses)
                     total_guesses = int(input("How many total guesses would you like?\n"))
+                    current_total_guesses = total_guesses
                     print("Total guesses have been set to", total_guesses)
                     print("Returning to settings menu.")
                     time.sleep(.5)
@@ -61,15 +64,22 @@ def settings_prompt(current_left_bound,  current_right_bound, current_total_gues
                     valid_setting_input = False
         elif setting_input == "4":
             while setting_input == "4" or setting_input.lower() != "y" or setting_input.lower() != "n":
+                if current_show_logic or show_logic:
+                    print("Current Settings reflect logic will be shown.")
+                else:
+                    print("Current settings reflect logic will NOT be shown.")
+
                 setting_input = input("Would you like to show the logic used by the "
                                       "computer each time you guess? (Y/N)\n")
                 if setting_input.lower() == "y":
                     show_logic = True
+                    current_show_logic = True
                     print("Logic will be shown after each guess.")
                     print("Returning to settings menu.")
                     time.sleep(.5)
                 elif setting_input.lower() == "n":
                     show_logic = False
+                    current_show_logic = False
                     print("Logic will NOT be shown after each guess.")
                     print("Returning to settings menu.")
                     time.sleep(.5)
@@ -88,7 +98,7 @@ time.sleep(1)
 print("The goal is to guess the number in less than " + str(current_settings.total_guesses), "tries.")
 time.sleep(1)
 
-settings_query = input("Would you like to change the settings? (Y/N)\n")
+settings_query = input("Would you like to change the settings? (y/n)\n")
 if settings_query.lower() == "y":
     current_settings = settings_prompt(current_settings.left_boundary, current_settings.right_boundary,
                                        current_settings.total_guesses, current_settings.show_logic)
