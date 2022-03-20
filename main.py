@@ -1,68 +1,87 @@
-import helpers
 import random
 import time
+
+left_boundary = 1
+right_boundary = 100
+
 print("Welcome to the number guessing game.")
 time.sleep(1)
-print("In this game a random number will be generated between 1 and 1000.")
+print("In this game a random number will be generated between " + str(left_boundary), "and", str(right_boundary) + ".")
 time.sleep(1)
 print("The goal is to guess the number in less than 10 tries.")
 time.sleep(1)
 
 guess = 0
 number_guessed = False
+guesses = 10
 
 while guess != "n" and not number_guessed:
-    random_number = random.choice(range(1, 1000, 1))
-    print("Random number was selected.")
-    guesses_left = 10
+    random_number = random.choice(range(left_boundary, right_boundary, 1))
+    print("Random number was selected. \nGood Luck!")
+    guesses_left = guesses
     previous_guess = -1
     past_count = 0
+    guess = 0
+    valid_input = True
+
     while not number_guessed and guesses_left != 0:
+        # This try block will catch a Value error if the user inputs anything other than a integer
         try:
             guess = int(input("Enter your guess (" + str(guesses_left) + " guesses left): "))
             guesses_left -= 1
+            valid_input = True
         except ValueError:
-            print("You must enter an integer between 1 and 1000.")
-            print("A guess has been used.")
+            print("You must enter an integer between " + str(left_boundary), "and", str(right_boundary) + ".")
+            valid_input = False
 
         if guess == random_number:
+            # This is the base case which will exit the loop once it reaches the end
             number_guessed = True
-        # This section of the if is for the first guess
-        elif (guess < 1 or guess > 1000) and guess != 0:
-            print("Guess must be between 1 and 1000")
-        elif previous_guess == -1:
-            if guess > random_number - 50 and guess < random_number + 50:
+        elif (guess < left_boundary or guess > right_boundary) and guess != 0:
+            # This runs if the guess is outside the boundaries given
+            print("Guess must be between " + str(left_boundary), "and", str(right_boundary) + ".")
+        elif previous_guess == -1 and valid_input:
+            # This runs for the first guess of each game
+            if random_number - 5 < guess < random_number + 5:
                 print("Hot!!")
-            elif guess > random_number - 100 and guess < random_number + 100:
+            elif random_number - 10 < guess < random_number + 10:
                 print("Warm.")
-            elif guess > random_number - 150 and guess < random_number + 150:
+            elif random_number - 15 < guess < random_number + 15:
                 print("Cold.")
             else:
                 print("Freezing!!")
 
         # This section is for the subsequent guesses after the first
-        else:
+        elif valid_input and guesses_left != 0:
+            if previous_guess == guess:
+                print("That was your previous guess. Guess a different number")
+                guesses_left += 1
             # If the guess is BETWEEN the previous guess and the random number then you are warmer
-            if (previous_guess < guess and guess < random_number) or (random_number < guess and guess < previous_guess):
+            elif (previous_guess < guess < random_number) or (random_number < guess < previous_guess):
                 print("Warmer...")
-            # If the guess is greater than the previous guess AND the random number then you have gone too far
-            # same is true with the inverse
-            elif (previous_guess < guess and random_number < guess) or (previous_guess > random_number and random_number > guess):
+
+            elif (previous_guess < guess and random_number < guess and previous_guess < random_number) or (
+                    previous_guess > random_number and random_number > guess and previous_guess > random_number):
+                # This runs if the guess is greater than the previous guess AND the random number then you have
+                # gone too far, same is true with the inverse
                 if past_count == 0:
-                    print("Woah too far!! ")
+                    print("Warmer...but too far!! ")
                 else:
                     print("You passed the random number again!")
                 past_count += 1
 
             else:
                 print("Colder...")
-        previous_guess = int(guess)
 
+        if not guesses_left == guesses:
+            previous_guess = guess
 
-    if number_guessed == True:
+    if guess == "e":
+        print("Game ended.")
+    elif number_guessed:
         print("Congratulations! You guessed the number!")
     else:
-        print("Sorry you ran out of tries.")
+        print("Sorry you ran out of tries. \nThe number was", random_number)
     guess = str(input("Would you like to play again? (y/n): "))
     number_guessed = False
 
