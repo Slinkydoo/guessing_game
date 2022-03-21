@@ -1,5 +1,6 @@
 import random
 import time
+from math import ceil, floor
 
 hints = {
     "prev": "That was your previous guess. Guess a different number",
@@ -16,65 +17,118 @@ class settings:
         settings.show_logic = show_logic
 
 
-def settings_prompt(current_left_bound,  current_right_bound, current_total_guesses, current_show_logic=False):
+def check_valid_input(input_as_str, data_type):
+
+    if data_type == "int":
+        try:
+            int(input_as_str)
+            return True
+        except ValueError:
+            print("You must enter an integer.")
+            return False
+
+
+def change_left_boundary(left_boundary: int, right_boundary: int, valid_boundaries=True):
+    valid_setting_input = False
+    if valid_boundaries:
+
+        while not valid_setting_input:
+            left_boundary = input("What would you like the left boundary to be?\n")
+            valid_setting_input = check_valid_input(left_boundary, "int")
+            if valid_setting_input:
+                left_boundary = int(left_boundary)
+
+        if left_boundary > right_boundary:
+            print("The left boundary is greater than the right boundary please update the right boundary to be "
+                  "greater than the left boundary.")
+            print("Left boundary is:", left_boundary, "\nRight boundary is:", right_boundary)
+            # print("Left boundary must be less than", current_right_bound, "\nLeft boundary was not changed.")
+            time.sleep(1)
+            # left_boundary = catch_left_bound
+        else:
+            print("Left boundary has been set to", left_boundary)
+
+    else:
+        print("Please change the left boundary to be less than the right boundary.")
+        print("Left boundary =", left_boundary, "\nRight boundary =", right_boundary)
+        while not valid_setting_input and not valid_boundaries:
+            if not valid_setting_input:
+                left_boundary = input("What would you like the left boundary to be?\n")
+                valid_setting_input = check_valid_input(left_boundary, "int")
+                if valid_setting_input:
+                    left_boundary = int(left_boundary)
+            while not valid_boundaries:
+                print("Enter a number less than", str(right_boundary) + "!")
+                left_boundary = int(input("What would you like the left boundary to be?\n"))
+                if left_boundary < right_boundary:
+                    valid_boundaries = True
+
+    return left_boundary
+
+
+def change_right_boundary(right_boundary: int, left_boundary: int, valid_boundaries=True):
+    valid_setting_input = False
+    if valid_boundaries:
+        while not valid_setting_input:
+            right_boundary = input("What would you like the right boundary to be?\n")
+            valid_setting_input = check_valid_input(right_boundary, "int")
+            if valid_setting_input:
+                right_boundary = int(right_boundary)
+
+        if right_boundary < left_boundary:
+            print("The right boundary is less than the left boundary please update the left boundary to be "
+                  "less than the right boundary.")
+            print("Left boundary is:", left_boundary, "\nRight boundary is:", right_boundary)
+            time.sleep(1)
+        else:
+            print("Right boundary has been set to", right_boundary)
+
+    else:
+        print("Please change the right boundary to be greater than the left boundary.")
+        print("Left boundary =", left_boundary, "\nRight boundary =", right_boundary)
+        while not valid_setting_input and not valid_boundaries:
+            if not valid_setting_input:
+                right_boundary = input("What would you like the right boundary to be?\n")
+                valid_setting_input = check_valid_input(right_boundary, "int")
+                if valid_setting_input:
+                    right_boundary = int(right_boundary)
+            while not valid_boundaries:
+                print("Enter a number greater than", str(left_boundary) + "!")
+                right_boundary = int(input("What would you like the left boundary to be?\n"))
+                if left_boundary > right_boundary:
+                    valid_boundaries = True
+
+    return right_boundary
+
+
+def settings_prompt(current_left_bound: int,  current_right_bound: int, current_total_guesses: int, current_show_logic=False):
     print("You can change the settings of the game here.")
-    # left_boundary = 1
-    # right_boundary = 100
-    # total_guesses = 10
-    # show_logic = False
     settings_confirmed = False
-    print("The current settings are:\n")
-    time.sleep(.75)
-    print("Left boundary =", current_left_bound, "\nRight boundary =", current_right_bound, "\nTotal guesses =", current_total_guesses,
-          "\nShow logic =", current_show_logic, "\n")
+
     time.sleep(.75)
     while not settings_confirmed:
+        print("The current settings are:\n")
+        time.sleep(.75)
+        print("Left boundary =", current_left_bound, "\nRight boundary =", current_right_bound, "\nTotal guesses =",
+              current_total_guesses,
+              "\nShow logic =", current_show_logic, "\n")
         setting_input = input("Available settings:\n1) left boundary set\n2) right boundary set\n3) total guesses set"
                               "\n4) show logic\nEnter the number of the setting to change it or type c to confirm:\n")
         valid_setting_input = False
         if setting_input == "1":
-            while not valid_setting_input:
-                print("Current left boundary is", current_left_bound)
-                catch_left_bound = current_left_bound
+            current_left_bound = change_left_boundary(current_left_bound, current_right_bound)
+            if current_left_bound > current_right_bound:
+                current_right_bound = change_right_boundary(current_right_bound, current_left_bound)
 
-                try:
-                    current_left_bound = int(input("What would you like the left boundary to be?\n"))
-                    valid_setting_input = True
-                except ValueError:
-                    print("You must enter an integer.")
-                    valid_setting_input = False
-
-                if current_left_bound > current_right_bound:
-                    print("Left boundary must be less than", current_right_bound, "\nLeft boundary was not changed.")
-                    time.sleep(1)
-                    current_left_bound = catch_left_bound
-                else:
-                    print("Left boundary has been set to", current_left_bound)
-
-                print("Returning to settings menu.")
-                time.sleep(.75)
+            print("Returning to settings menu.")
+            time.sleep(.75)
 
         elif setting_input == "2":
-            while not valid_setting_input:
-                print("Current right boundary is", current_right_bound)
-                catch_right_bound = current_right_bound
-
-                try:
-                    current_right_bound = int(input("What would you like the right boundary to be?\n"))
-                    valid_setting_input = True
-                except ValueError:
-                    print("You must enter an integer.")
-                    valid_setting_input = False
-
-                if current_right_bound < current_left_bound:
-                    print("Right boundary must be greater than", current_left_bound, "\nRight boundary was not changed.")
-                    time.sleep(1)
-                    current_right_bound = catch_right_bound
-                else:
-                    print("Right boundary has been set to", current_right_bound)
-
-                print("Returning to settings menu.")
-                time.sleep(.75)
+            current_right_bound = change_right_boundary(current_right_bound, current_left_bound)
+            if current_right_bound < current_left_bound:
+                current_left_bound = change_left_boundary(current_left_bound, current_right_bound)
+            print("Returning to settings menu.")
+            time.sleep(.75)
 
         elif setting_input == "3":
             while not valid_setting_input:
@@ -119,7 +173,7 @@ def settings_prompt(current_left_bound,  current_right_bound, current_total_gues
             settings_confirmed = True
             return settings(current_left_bound, current_right_bound, current_total_guesses, current_show_logic)
 
-
+# Default settings
 current_settings = settings(1, 100, 10, False)
 
 print("Welcome to the number guessing game.")
@@ -140,6 +194,7 @@ number_guessed: bool = False
 while guess != "n" and not number_guessed:
     random_number = random.choice(range(current_settings.left_boundary, current_settings.right_boundary, 1))
     print("Random number was selected. \nGood Luck!")
+    print("Random number is: ", random_number)
     guesses_left: int = current_settings.total_guesses
     previous_guess: int = current_settings.left_boundary - 1
     past_count: int = 0
@@ -174,13 +229,18 @@ while guess != "n" and not number_guessed:
                       str(current_settings.right_boundary) + ".")
                 guesses_left += 1
 
-            # The first guess of each game should tell the user how close they are to the random number
+            # The first guess of each game should tell the user how close they are to the random number based
+            # on the difference of the boundaries
             elif previous_guess == current_settings.left_boundary - 1:
-                if random_number - 5 <= guess <= random_number + 5:
+
+                if random_number - (floor(current_settings.right_boundary - current_settings.left_boundary) // 10) <= guess\
+                        <= random_number + (ceil(current_settings.right_boundary - current_settings.left_boundary) // 10):
                     print("Hot!!")
-                elif random_number - 10 <= guess <= random_number + 10:
+                elif random_number - (floor(current_settings.right_boundary - current_settings.left_boundary) // 4) <= guess\
+                        <= random_number + (ceil(current_settings.right_boundary - current_settings.left_boundary) // 4):
                     print("Warm.")
-                elif random_number - 15 <= guess <= random_number + 15:
+                elif random_number - (floor(current_settings.right_boundary - current_settings.left_boundary) // 2) <= guess\
+                        <= random_number + (ceil(current_settings.right_boundary - current_settings.left_boundary) // 2):
                     print("Cold.")
                 else:
                     print("Freezing!!")
