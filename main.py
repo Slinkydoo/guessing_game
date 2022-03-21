@@ -194,7 +194,8 @@ number_guessed: bool = False
 while guess != "n" and not number_guessed:
     random_number = random.choice(range(current_settings.left_boundary, current_settings.right_boundary, 1))
     print("Random number was selected. \nGood Luck!")
-    print("Random number is: ", random_number)
+    # The commented line below is for testing inputs
+    # print("Random number is: ", random_number)
     guesses_left: int = current_settings.total_guesses
     previous_guess: int = current_settings.left_boundary - 1
     past_count: int = 0
