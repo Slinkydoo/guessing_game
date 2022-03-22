@@ -55,20 +55,19 @@ while not settings_confirmed:
                 if valid_input:
                     guesses_left -= 1
                     guess = int(guess)
-                    # If the user guesses the number reflect this in a variable that will exit the game loop
+                    # If the user guesses the random number reflect this in a variable that will exit the game loop
                     if guess == random_number:
                         number_guessed = True
 
                     # If the users guess is outside the boundaries then tell the user the guess must
                     # be between the current boundaries but this should not use a guess
                     elif guess < current_settings.left_boundary or guess > current_settings.right_boundary:
-                        # This runs if the guess is outside the boundaries given
                         print("Guess must be between " + str(current_settings.left_boundary), "and",
                               str(current_settings.right_boundary) + ".")
                         guesses_left += 1
 
                     # The first guess of each game should tell the user how close they are to the random number based
-                    # on the difference of the boundaries
+                    # on how many numbers there are to guess from
                     elif previous_guess == current_settings.left_boundary - 1:
 
                         if random_number - (floor(current_settings.right_boundary - current_settings.left_boundary + 1) // 10)\
@@ -146,6 +145,8 @@ while not settings_confirmed:
                 print("The game lasted", int(end_time - start_time) // 60, "minutes and", int(end_time - start_time) % 60, "seconds.")
             else:
                 print("The game lasted", int(end_time - start_time), "seconds.")
+
+            # This shows the condition of the game after it is over
             if guess == "e":
                 print("Game ended.")
             elif number_guessed:
@@ -153,6 +154,7 @@ while not settings_confirmed:
             else:
                 print("Sorry you ran out of tries. \nThe number was", random_number)
             guess = str(input("Would you like to play again? (y/n): "))
+
             # The following if statement will exit the "game" loop and return to the "settings" loop
             if guess == "y":
                 settings_confirmed = False

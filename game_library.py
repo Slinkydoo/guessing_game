@@ -91,7 +91,6 @@ def show_logic(left_boundary, right_boundary, guess, previous_guess, information
             return [previous_guess, right_boundary]
 
 
-
 def settings_prompt(current_left_bound: int, current_right_bound: int, current_total_guesses: int,
                     current_show_logic=False):
     print("You can change the settings of the game here.")
