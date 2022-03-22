@@ -3,8 +3,8 @@ import time
 
 hints: dict = {
     "prev": "That was your previous guess. Guess a different number",
-    "warm": "Warmer...",
-    "cold": "Colder...",
+    "warmer": "Warmer...",
+    "colder": "Colder...",
     "too_far": "Warmer...but too far!",
     "too_far_again": "Too far again."
 }
@@ -73,11 +73,29 @@ def change_right_boundary(right_boundary: int, left_boundary: int, valid_boundar
     return right_boundary
 
 
+def show_logic(left_boundary, right_boundary, guess, previous_guess, information, random_number):
+    if information.lower() == "warmer":
+        if previous_guess < guess < random_number:
+            return [guess, right_boundary]
+        else:
+            return [left_boundary, guess]
+    elif information.lower() == "too_far":
+        if previous_guess < guess and random_number < guess and previous_guess < random_number:
+            return [previous_guess, guess]
+        else:
+            return [guess, previous_guess]
+    elif information.lower() == "colder":
+        if previous_guess < guess:
+            return [left_boundary, previous_guess]
+        else:
+            return [previous_guess, right_boundary]
+
+
+
 def settings_prompt(current_left_bound: int, current_right_bound: int, current_total_guesses: int,
                     current_show_logic=False):
     print("You can change the settings of the game here.")
     settings_confirmed = False
-
 
     while not settings_confirmed:
         time.sleep(.75)
@@ -140,8 +158,6 @@ def settings_prompt(current_left_bound: int, current_right_bound: int, current_t
             else:
                 current_show_logic = False
                 print("Logic will NOT be shown after each guess.")
-
-
 
         elif setting_input.lower() == "c":
             settings_confirmed = True
