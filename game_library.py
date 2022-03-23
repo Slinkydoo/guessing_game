@@ -73,7 +73,8 @@ def change_right_boundary(right_boundary: int, left_boundary: int, valid_boundar
     return right_boundary
 
 
-def show_logic(left_boundary: int, right_boundary: int, guess: int, previous_guess: int, information: str, random_number: int):
+def show_logic(left_boundary: int, right_boundary: int, guess: int, previous_guess: int, information: str,
+               random_number: int):
     if information.lower() == "warmer":
         if previous_guess < guess < random_number:
             return [guess, right_boundary]
@@ -81,9 +82,15 @@ def show_logic(left_boundary: int, right_boundary: int, guess: int, previous_gue
             return [left_boundary, guess]
     elif information.lower() == "too_far":
         if previous_guess < guess > random_number > previous_guess:
-            return [previous_guess, guess]
+            if previous_guess > left_boundary:
+                return [previous_guess, guess]
+            else:
+                return [left_boundary, guess]
         else:
-            return [guess, previous_guess]
+            if previous_guess > right_boundary:
+                return [guess, previous_guess]
+            else:
+                return [guess, right_boundary]
     elif information.lower() == "colder":
         if previous_guess < guess:
             return [left_boundary, previous_guess]
@@ -99,13 +106,19 @@ def settings_prompt(current_left_bound: int, current_right_bound: int, current_t
     while not settings_confirmed:
         time.sleep(.75)
         print("\nThe current settings are:")
-        time.sleep(.75)
+        # time.sleep(.75)
         print("Left boundary =", current_left_bound, "\nRight boundary =", current_right_bound, "\nTotal guesses =",
               current_total_guesses,
               "\nShow logic =", current_show_logic, "\n")
         time.sleep(.75)
-        setting_input = input("Available Settings:\n1) left boundary set\n2) right boundary set\n3) total guesses set"
-                              "\n4) show logic\n\nEnter the number of the setting to change it:\n(Type c to confirm all settings and play!)\n")
+        setting_input = input("Available Settings:\n"
+                              "1) Change left boundary\n"
+                              "2) Change right boundary\n"
+                              "3) Change total guesses\n"
+                              "4) Change show logic\n"
+                              "\nEnter the number of the setting to change it:\n"
+                              "(Type c to confirm all settings and play!)\n")
+
         valid_setting_input = False
 
         # Left boundary setting
@@ -159,12 +172,9 @@ def settings_prompt(current_left_bound: int, current_right_bound: int, current_t
                 print("Logic will NOT be shown after each guess.")
 
         elif setting_input.lower() == "c":
-            settings_confirmed = True
+            # settings_confirmed = True
             return Settings(current_left_bound, current_right_bound, current_total_guesses, current_show_logic)
 
         time.sleep(.75)
         print("Returning to Settings menu.")
         time.sleep(.75)
-
-
-time.perf_counter()

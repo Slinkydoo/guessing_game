@@ -4,7 +4,7 @@ from math import ceil, floor
 import game_library
 
 # Default Settings
-current_settings = game_library.Settings(1, 100, 10, False)
+current_settings = game_library.Settings(1, 500, 10, True)
 settings_confirmed = False
 print("Welcome to the number guessing game.")
 time.sleep(1)
@@ -29,10 +29,12 @@ while not settings_confirmed:
 
         # "Game" loop ---------------------------------------------------------------------------------------------
         while guess != "n" and not number_guessed:
+            # Game is initialized----------------------------
             random_number = random.choice(range(current_settings.left_boundary, current_settings.right_boundary, 1))
             print("Random number was selected. \nGood Luck!")
-            # The commented line below is for testing inputs
-            print("Random number is: ", random_number)
+            # The two commented lines below are for testing inputs
+            # random_number = 311
+            # print("Random number is: ", random_number)
             start_time = time.time()
             guesses_left: int = current_settings.total_guesses
 
@@ -150,22 +152,33 @@ while not settings_confirmed:
 
             end_time = time.time()
 
-            # If the user guessed the number, print a winning message then ask if they want to play again
-            if end_time - start_time > 60:
-                print("The game lasted", int(end_time - start_time) // 60, "minutes and", int(end_time - start_time) % 60, "seconds.")
-            else:
-                print("The game lasted", int(end_time - start_time), "seconds.")
+
 
             # This shows the condition of the game after it is over
             if guess == "e":
                 print("Game ended.")
             elif number_guessed:
-                print("Congratulations! You guessed the number in", (current_settings.total_guesses - guesses_left), "tries!")
+                if guesses_left == current_settings.total_guesses - 1:
+                    print("It must be your lucky day because...")
+                    time.sleep(1.25)
+                    print("You guessed the number in one try! Congratulations!")
+                else:
+                    print("Congratulations! You guessed the number in",
+                      (current_settings.total_guesses - guesses_left), "tries!")
             else:
                 print("Sorry you ran out of tries. \nThe number was", random_number)
+
+            # If the user guessed the number, print a winning message then ask if they want to play again
+            if end_time - start_time > 60:
+                print("The game lasted", int(end_time - start_time) // 60, "minutes and",
+                      int(end_time - start_time) % 60, "seconds.")
+            else:
+                print("The game lasted", int(end_time - start_time), "seconds.")
+            time.sleep(1)
             guess = str(input("Would you like to play again? (y/n): "))
 
             # The following if statement will exit the "game" loop and return to the "settings" loop
+            # because at this point number_guessed is True which will exit the game loop
             if guess == "y":
                 settings_confirmed = False
                 # guesses_left = 0
