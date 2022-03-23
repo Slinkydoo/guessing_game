@@ -20,7 +20,7 @@ while not settings_confirmed:
     settings_query = input("Would you like to change the settings? (y/n)\n")
     if settings_query.lower() == "y":
         current_settings = game_library.settings_prompt(current_settings.left_boundary, current_settings.right_boundary,
-                                                            current_settings.total_guesses, current_settings.show_logic)
+                                                        current_settings.total_guesses, current_settings.show_logic)
     settings_confirmed = True
 
     if settings_confirmed:
@@ -35,6 +35,9 @@ while not settings_confirmed:
             print("Random number is: ", random_number)
             start_time = time.time()
             guesses_left: int = current_settings.total_guesses
+
+            # previous_guess is set to one less than the left boundary intentionally. This intentional assignment
+            # is to identify the user's first guess
             previous_guess: int = current_settings.left_boundary - 1
             past_count: int = 0
             guess = 0
@@ -59,7 +62,7 @@ while not settings_confirmed:
                     if guess == random_number:
                         number_guessed = True
 
-                    # If the users guess is outside the boundaries then tell the user the guess must
+                    # If the user's guess is outside the boundaries then tell the user the guess must
                     # be between the current boundaries but this should not use a guess
                     elif guess < current_settings.left_boundary or guess > current_settings.right_boundary:
                         print("Guess must be between " + str(current_settings.left_boundary), "and",
@@ -77,7 +80,7 @@ while not settings_confirmed:
                             if current_settings.show_logic:
                                 print("The random number is very close to", guess)
 
-                        elif random_number - (floor(current_settings.right_boundary - current_settings.left_boundary+ 1) // 4)\
+                        elif random_number - (floor(current_settings.right_boundary - current_settings.left_boundary + 1) // 4)\
                                 <= guess <=\
                                 random_number + (ceil(current_settings.right_boundary - current_settings.left_boundary + 1) // 4):
                             print("Warm.")
@@ -106,13 +109,17 @@ while not settings_confirmed:
                         elif (previous_guess < guess < random_number) or (random_number < guess < previous_guess):
                             print(game_library.hints["warmer"])
                             if current_settings.show_logic:
-                                show_logic_boundaries = game_library.show_logic(show_logic_boundaries[0], show_logic_boundaries[1], guess, previous_guess, "warmer", random_number)
-                                print('The random number must be between or equal to', show_logic_boundaries[0], "and", show_logic_boundaries[1])
+                                show_logic_boundaries = game_library.show_logic(show_logic_boundaries[0],
+                                                                                show_logic_boundaries[1],
+                                                                                guess, previous_guess,
+                                                                                "warmer", random_number)
+                                print('The random number must be between or equal to', show_logic_boundaries[0], "and",
+                                      show_logic_boundaries[1])
 
                         # If the guess is greater than the previous guess AND the random number then you went too far.
                         # Also, if the guess is less than the previous guess AND the random number
-                        elif (previous_guess < guess and random_number < guess and previous_guess < random_number)\
-                                or (previous_guess > random_number and random_number > guess and previous_guess > random_number):
+                        elif (previous_guess < guess > random_number > previous_guess)\
+                                or (previous_guess > guess < random_number < previous_guess):
                             if past_count == 0:
                                 print(game_library.hints["too_far"])
                             else:
@@ -120,7 +127,8 @@ while not settings_confirmed:
                             past_count += 1
 
                             if current_settings.show_logic:
-                                show_logic_boundaries = game_library.show_logic(show_logic_boundaries[0], show_logic_boundaries[1],
+                                show_logic_boundaries = game_library.show_logic(show_logic_boundaries[0],
+                                                                                show_logic_boundaries[1],
                                                                                 guess, previous_guess, "too_far",
                                                                                 random_number)
                                 print('The random number must be between or equal to', show_logic_boundaries[0], "and",
@@ -129,13 +137,15 @@ while not settings_confirmed:
                         else:
                             print(game_library.hints["colder"])
                             if current_settings.show_logic:
-                                show_logic_boundaries = game_library.show_logic(show_logic_boundaries[0], show_logic_boundaries[1],
+                                show_logic_boundaries = game_library.show_logic(show_logic_boundaries[0],
+                                                                                show_logic_boundaries[1],
                                                                                 guess, previous_guess, "colder",
                                                                                 random_number)
                                 print('The random number must be between or equal to', show_logic_boundaries[0], "and",
                                       show_logic_boundaries[1])
 
-                    if not guesses_left == current_settings.total_guesses and current_settings.left_boundary < guess < current_settings.right_boundary:
+                    if not guesses_left == current_settings.total_guesses and \
+                            current_settings.left_boundary < guess < current_settings.right_boundary:
                         previous_guess = guess
 
             end_time = time.time()

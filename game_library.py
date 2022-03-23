@@ -73,14 +73,14 @@ def change_right_boundary(right_boundary: int, left_boundary: int, valid_boundar
     return right_boundary
 
 
-def show_logic(left_boundary, right_boundary, guess, previous_guess, information, random_number):
+def show_logic(left_boundary: int, right_boundary: int, guess: int, previous_guess: int, information: str, random_number: int):
     if information.lower() == "warmer":
         if previous_guess < guess < random_number:
             return [guess, right_boundary]
         else:
             return [left_boundary, guess]
     elif information.lower() == "too_far":
-        if previous_guess < guess and random_number < guess and previous_guess < random_number:
+        if previous_guess < guess > random_number > previous_guess:
             return [previous_guess, guess]
         else:
             return [guess, previous_guess]
@@ -165,3 +165,6 @@ def settings_prompt(current_left_bound: int, current_right_bound: int, current_t
         time.sleep(.75)
         print("Returning to Settings menu.")
         time.sleep(.75)
+
+
+time.perf_counter()
