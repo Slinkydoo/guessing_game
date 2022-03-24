@@ -4,7 +4,7 @@ from math import ceil, floor
 import game_library
 
 # Default Settings
-current_settings = game_library.Settings(1, 100, 10, True)
+current_settings = game_library.Settings(1, 100, 10, False)
 play_again = True
 game_number = 1
 print("Welcome to the number guessing game.")
@@ -64,6 +64,9 @@ while play_again:
         if guess == "e":
             break
 
+        # The check for valid input is structured this way because if the user wants to exit the game
+        # they are allowed to type 'e' to exit which is valid input to end the game but is not valid input for
+        # guessing a number
         valid_input = game_library.check_valid_input(guess, "int")
 
         # This if statement will only run if the input is valid which indirectly forces the user
@@ -172,7 +175,7 @@ while play_again:
             print("You guessed the number in one try! Congratulations!")
         else:
             print("Congratulations! You guessed the number in",
-              (current_settings.total_guesses - guesses_left), "tries!")
+                  (current_settings.total_guesses - guesses_left), "tries!")
     else:
         print("Sorry you ran out of tries. \nThe number was", random_number)
 
