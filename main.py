@@ -58,7 +58,10 @@ while play_again:
     # Game loop -----------------------------------------------------------------------------
     while not number_guessed and guesses_left != 0:
         # Checks for valid input
-        guess = input("Enter your guess (" + str(guesses_left) + " guesses left): ")
+        if guesses_left == 1:
+            guess = input("Enter your guess (1 guess left!): ")
+        else:
+            guess = input("Enter your guess (" + str(guesses_left) + " guesses left): ")
 
         # This statement will allow the user to exit the game at any time
         if guess == "e":
